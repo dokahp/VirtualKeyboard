@@ -1,4 +1,4 @@
-import { fKey } from './buttonsData.js';
+import { keyCode, fKey } from './buttonsData.js';
 
 const EN = [
   ['~', '`'],
