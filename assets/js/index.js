@@ -1,3 +1,5 @@
+import { fKey } from './buttonsData.js';
+
 const EN = [
   ['~', '`'],
   ['!', '1'],
@@ -63,17 +65,6 @@ const EN = [
   '↓',
   '→',
   'option',
-];
-const fKey = [
-  'delete',
-  'tab',
-  'caps lock',
-  'return',
-  'shift',
-  'fn',
-  'option',
-  'control',
-  'command',
 ];
 
 class Keyboard {
