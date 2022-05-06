@@ -35,7 +35,8 @@ textarea {
   overflow: hidden;
 }
 
-.key, .f_key {
+.key,
+.f_key {
   width: 40px;
   height: 45px;
   margin: 2px;
@@ -44,7 +45,8 @@ textarea {
   border-radius: 4px;
   float: left;
 }
-.key.pressed, .f_key.pressed {
+.key.pressed,
+.f_key.pressed {
   -webkit-transform: scale(0.95, 0.95);
   -moz-transform: scale(0.95, 0.95);
   -ms-transform: scale(0.95, 0.95);
@@ -53,11 +55,13 @@ textarea {
 }
 
 .key {
+  cursor: pointer;
   background: #d3cfcc;
   border-color: #ece8e4 #dedad6 #c9c4c4;
 }
 
 .f_key {
+  cursor: pointer;
   background: #a8aeb8;
   border-color: #c4c7cc #adb9cc #96a6bd;
 }
@@ -96,11 +100,13 @@ textarea {
   position: relative;
 }
 
-.delete, .tab {
+.delete,
+.tab {
   width: 114px;
 }
 
-.capslock, .return {
+.capslock,
+.return {
   width: 106px;
 }
 

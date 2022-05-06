@@ -117,6 +117,11 @@ class Keyboard {
           this.newKey.classList.add('space');
         }
       }
+      if (Array.isArray(EN[i])) {
+        this.newKey.classList.add(`k${EN[i][1].charCodeAt()}`);
+      } else {
+        this.newKey.classList.add(`k${EN[i].charCodeAt()}`);
+      }
       this.main.appendChild(this.newKey);
       this.keyCap = document.createElement('div');
       if (Array.isArray(EN[i])) {
@@ -129,9 +134,52 @@ class Keyboard {
       this.newKey.appendChild(this.keyCap);
     }
   };
+
+  generateEvents = () => {
+    this.mainKeyboard = document.querySelector('.main');
+    this.mainKeyboard.addEventListener('mousedown', (e) => this.onMouseDown(e));
+    this.mainKeyboard.addEventListener('mouseup', (e) => this.onMouseUp(e));
+    document.addEventListener('keydown', (e) => this.onKeyDown(e));
+    document.addEventListener('keyup', (e) => this.onKeyUp(e));
+  };
+
+  onKeyDown = (e) => {
+    this.addKeyAnimation(e);
+  };
+
+  onKeyUp = (e) => {
+    this.removeKeyAnimation(e);
+  };
+
+  onMouseDown = (e) => {
+    this.addKeyAnimation(e);
+  };
+
+  onMouseUp = (e) => {
+    this.removeKeyAnimation(e);
+  };
+
+  addKeyAnimation = (e) => {
+    this.object = e.target;
+    if (e.target.classList.contains('key')) {
+      e.target.classList.add('pressed');
+    } else {
+      e.target.parentNode.classList.add('pressed');
+    }
+  };
+
+  removeKeyAnimation = (e) => {
+    this.object = e.target;
+    if (this.object.classList.contains('key')) {
+      this.object.classList.remove('pressed');
+    } else {
+      this.object.parentNode.classList.remove('pressed');
+    }
+  };
 }
 
 window.onload = () => {
   const keyboard = new Keyboard();
   keyboard.generateKeyboard();
+  keyboard.generateEvents();
 };
