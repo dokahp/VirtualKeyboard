@@ -1,4 +1,80 @@
-const EN = ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='];
+const EN = [
+  ['~', '`'],
+  ['!', '1'],
+  ['@', '2'],
+  ['#', '3'],
+  ['$', '4'],
+  ['%', '5'],
+  ['^', '6'],
+  ['&', '7'],
+  ['*', '8'],
+  ['(', '9'],
+  [')', '0'],
+  ['_', '-'],
+  ['+', '='],
+  'delete',
+  'tab',
+  'Q',
+  'W',
+  'E',
+  'R',
+  'T',
+  'Y',
+  'U',
+  'I',
+  'O',
+  'P',
+  ['{', '['],
+  ['}', ']'],
+  ['|', '\\'],
+  'caps lock',
+  'A',
+  'S',
+  'D',
+  'F',
+  'G',
+  'H',
+  'J',
+  'K',
+  'L',
+  [':', ';'],
+  ['"', "'"],
+  'return',
+  'shift',
+  'Z',
+  'X',
+  'C',
+  'V',
+  'B',
+  'N',
+  'M',
+  ['<', ','],
+  ['>', '.'],
+  ['?', '/'],
+  '↑',
+  'shift',
+  'fn',
+  'control',
+  'option',
+  'command',
+  ' ',
+  'command',
+  '←',
+  '↓',
+  '→',
+  'option',
+];
+const fKey = [
+  'delete',
+  'tab',
+  'caps lock',
+  'return',
+  'shift',
+  'fn',
+  'option',
+  'control',
+  'command',
+];
 
 class Keyboard {
   constructor() {
@@ -26,10 +102,29 @@ class Keyboard {
     this.keyboard.appendChild(this.main);
     for (let i = 0; i < EN.length; i += 1) {
       this.newKey = document.createElement('div');
-      this.newKey.classList.add('key');
+      if (fKey.includes(EN[i])) {
+        this.newKey.classList.add('f_key');
+        if (i === 41) {
+          this.newKey.classList.add('shift-left');
+        } else if (i === 53) {
+          this.newKey.classList.add('shift-right');
+        } else {
+          this.newKey.classList.add(`${EN[i].split(' ').join('')}`);
+        }
+      } else {
+        this.newKey.classList.add('key');
+        if (i === 58) {
+          this.newKey.classList.add('space');
+        }
+      }
       this.main.appendChild(this.newKey);
       this.keyCap = document.createElement('div');
-      this.keyCap.textContent = EN[i];
+      if (Array.isArray(EN[i])) {
+        this.keyCap.innerHTML = `${EN[i][0]} <br />  ${EN[i][1]}`;
+      } else {
+        this.keyCap.textContent = EN[i];
+      }
+
       this.keyCap.classList.add('keycap');
       this.newKey.appendChild(this.keyCap);
     }

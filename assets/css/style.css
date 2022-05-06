@@ -26,6 +26,7 @@ textarea {
   background: linear-gradient(to bottom, #e5e2e1, #f5f3f1, #e5e2e1);
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2), inset 0 0 3px rgba(0, 0, 0, 0.3);
+  padding: 40px 10px 5px;
 }
 .keyboard .main {
   padding: 2px;
@@ -93,6 +94,41 @@ textarea {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   position: relative;
+}
+
+.delete, .tab {
+  width: 114px;
+}
+
+.capslock, .return {
+  width: 106px;
+}
+
+.shift-left {
+  width: 99px;
+}
+
+.shift-right {
+  width: 112px;
+}
+
+.control {
+  width: 55px;
+}
+
+.option {
+  width: 55px;
+}
+
+.command {
+  width: 70px;
+}
+
+.space {
+  width: 241px;
+}
+.space .keycap {
+  width: auto;
 }
 
 /*# sourceMappingURL=style.css.map */
