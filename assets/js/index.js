@@ -28,13 +28,13 @@ class Keyboard {
     this.main.classList.add('main');
     this.keyboard.appendChild(this.main);
     if (this.lang === 'en') {
-      this.currLanguage = EN;
+      this.currLang = EN;
     } else {
-      this.currLanguage = RU;
+      this.currLang = RU;
     }
-    for (let i = 0; i < this.currLanguage.length; i += 1) {
+    for (let i = 0; i < this.currLang.length; i += 1) {
       this.newKey = document.createElement('div');
-      if (Array.isArray(this.currLanguage[i]) && this.currLanguage[i].length === 1) {
+      if (Array.isArray(this.currLang[i]) && this.currLang[i].length === 1) {
         this.newKey.classList.add('f_key');
       } else {
         this.newKey.classList.add('key');
@@ -42,14 +42,14 @@ class Keyboard {
       this.newKey.setAttribute('id', `${keyCode[i]}`);
       this.main.appendChild(this.newKey);
       this.keyCap = document.createElement('div');
-      if (Array.isArray(this.currLanguage[i])) {
-        if (this.currLanguage[i].length > 1) {
-          this.keyCap.innerHTML = `${this.currLanguage[i][0]} <br />  ${this.currLanguage[i][1]}`;
+      if (Array.isArray(this.currLang[i])) {
+        if (this.currLang[i].length > 1) {
+          this.keyCap.innerHTML = `${this.currLang[i][0]} <br />  ${this.currLang[i][1]}`;
         } else {
-          this.keyCap.textContent = [...this.currLanguage[i]];
+          this.keyCap.textContent = [...this.currLang[i]];
         }
       } else {
-        this.keyCap.textContent = this.currLanguage[i].toLowerCase();
+        this.keyCap.textContent = this.currLang[i].toLowerCase();
       }
       this.keyCap.classList.add('keycap');
       this.newKey.appendChild(this.keyCap);
@@ -64,15 +64,34 @@ class Keyboard {
     document.addEventListener('keyup', (e) => this.onKeyUp(e));
   };
 
+  changeKeyboardLayout = () => {
+    const allKeyCaps = document.querySelectorAll('.keycap');
+    for (let i = 0; i < allKeyCaps.length; i += 1) {
+      if (Array.isArray(this.currLang[i])) {
+        if (this.currLang[i].length > 1) {
+          allKeyCaps[
+            i
+          ].innerHTML = `${this.currLang[i][0]} <br />  ${this.currLang[i][1]}`;
+        } else {
+          allKeyCaps[i].textContent = [...this.currLang[i]];
+        }
+      } else {
+        allKeyCaps[i].textContent = this.currLang[i].toLowerCase();
+      }
+    }
+    return this;
+  };
+
   changeLanguage = () => {
     if (this.lang === 'en') {
       localStorage.setItem('keyboard_lang', 'ru');
-      this.currLanguage = RU;
+      this.currLang = RU;
     } else {
       localStorage.setItem('keyboard_lang', 'en');
-      this.currLanguage = EN;
+      this.currLang = EN;
     }
     this.lang = localStorage.getItem('keyboard_lang');
+    this.changeKeyboardLayout();
   };
 
   onKeyDown = (e) => {
@@ -98,6 +117,9 @@ class Keyboard {
 
   onMouseUp = (e) => {
     this.removeKeyAnimation(e);
+    if (e.target.textContent === 'fn' || e.target.id === 'fn') {
+      this.changeLanguage();
+    }
   };
 
   addKeyAnimation = (e) => {
