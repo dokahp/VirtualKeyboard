@@ -22,6 +22,7 @@ textarea {
     width: 100%;
     height: 150px;
     margin-bottom: 25px;
+    font-size: 24px;
 }
 
 .keyboard {
@@ -49,12 +50,13 @@ textarea {
     border-style: solid;
     border-radius: 4px;
     float: left;
+
     &.pressed {
-        -webkit-transform: scale(0.95, 0.95);
-        -moz-transform: scale(0.95, 0.95);
-        -ms-transform: scale(0.95, 0.95);
-        -o-transform: scale(0.95, 0.95);
-        transform: scale(0.95, 0.95);
+        -webkit-transform: scale(0.9, 0.9);
+        -moz-transform: scale(0.9, 0.9);
+        -ms-transform: scale(0.9, 0.9);
+        -o-transform: scale(0.9, 0.9);
+        transform: scale(0.9, 0.9);
     }
 }
 
@@ -104,38 +106,40 @@ textarea {
     position: relative;
 }
 
-.delete,
-.tab {
+#Backspace,
+#Tab {
     width: 114px;
 }
 
-.capslock,
-.return {
+#CapsLock,
+#Enter {
     width: 106px;
 }
 
-.shift-left {
-    // width: 135px;
+#ShiftLeft {
     width: 99px;
 }
 
-.shift-right {
+#ShiftRight {
     width: 112px;
 }
 
-.control {
+#ControlLeft,
+#ControlRight {
     width: 55px;
 }
 
-.option {
+#AltLeft,
+#AltRight {
     width: 55px;
 }
 
-.command {
+#MetaLeft,
+#MetaRight {
     width: 70px;
 }
 
-.space {
+#Space {
     width: 241px;
 
     .keycap {

@@ -1,71 +1,5 @@
-import { keyCode, fKey } from './buttonsData.js';
-
-const EN = [
-  ['~', '`'],
-  ['!', '1'],
-  ['@', '2'],
-  ['#', '3'],
-  ['$', '4'],
-  ['%', '5'],
-  ['^', '6'],
-  ['&', '7'],
-  ['*', '8'],
-  ['(', '9'],
-  [')', '0'],
-  ['_', '-'],
-  ['+', '='],
-  'delete',
-  'tab',
-  'Q',
-  'W',
-  'E',
-  'R',
-  'T',
-  'Y',
-  'U',
-  'I',
-  'O',
-  'P',
-  ['{', '['],
-  ['}', ']'],
-  ['|', '\\'],
-  'caps lock',
-  'A',
-  'S',
-  'D',
-  'F',
-  'G',
-  'H',
-  'J',
-  'K',
-  'L',
-  [':', ';'],
-  ['"', "'"],
-  'return',
-  'shift',
-  'Z',
-  'X',
-  'C',
-  'V',
-  'B',
-  'N',
-  'M',
-  ['<', ','],
-  ['>', '.'],
-  ['?', '/'],
-  '↑',
-  'shift',
-  'fn',
-  'control',
-  'option',
-  'command',
-  ' ',
-  'command',
-  '←',
-  '↓',
-  '→',
-  'option',
-];
+import { keyCode } from './buttonsData.js';
+import { EN, RU } from './languages.js';
 
 class Keyboard {
   constructor() {
@@ -75,7 +9,8 @@ class Keyboard {
     if (localStorage.getItem('keyboard_lang')) {
       this.lang = localStorage.getItem('keyboard_lang');
     } else {
-      this.lang = 'en';
+      localStorage.setItem('keyboard_lang', 'en');
+      this.lang = localStorage.getItem('keyboard_lang');
     }
   }
 
@@ -92,30 +27,29 @@ class Keyboard {
     this.main = document.createElement('div');
     this.main.classList.add('main');
     this.keyboard.appendChild(this.main);
-    for (let i = 0; i < EN.length; i += 1) {
+    if (this.lang === 'en') {
+      this.currLanguage = EN;
+    } else {
+      this.currLanguage = RU;
+    }
+    for (let i = 0; i < this.currLanguage.length; i += 1) {
       this.newKey = document.createElement('div');
-      if (fKey.includes(EN[i])) {
+      if (Array.isArray(this.currLanguage[i]) && this.currLanguage[i].length === 1) {
         this.newKey.classList.add('f_key');
-        if (i === 41) {
-          this.newKey.classList.add('shift-left');
-        } else if (i === 53) {
-          this.newKey.classList.add('shift-right');
-        } else {
-          this.newKey.classList.add(`${EN[i].split(' ').join('')}`);
-        }
       } else {
         this.newKey.classList.add('key');
-        if (i === 58) {
-          this.newKey.classList.add('space');
-        }
       }
       this.newKey.setAttribute('id', `${keyCode[i]}`);
       this.main.appendChild(this.newKey);
       this.keyCap = document.createElement('div');
-      if (Array.isArray(EN[i])) {
-        this.keyCap.innerHTML = `${EN[i][0]} <br />  ${EN[i][1]}`;
+      if (Array.isArray(this.currLanguage[i])) {
+        if (this.currLanguage[i].length > 1) {
+          this.keyCap.innerHTML = `${this.currLanguage[i][0]} <br />  ${this.currLanguage[i][1]}`;
+        } else {
+          this.keyCap.textContent = [...this.currLanguage[i]];
+        }
       } else {
-        this.keyCap.textContent = EN[i];
+        this.keyCap.textContent = this.currLanguage[i].toLowerCase();
       }
       this.keyCap.classList.add('keycap');
       this.newKey.appendChild(this.keyCap);
@@ -130,17 +64,32 @@ class Keyboard {
     document.addEventListener('keyup', (e) => this.onKeyUp(e));
   };
 
+  changeLanguage = () => {
+    if (this.lang === 'en') {
+      localStorage.setItem('keyboard_lang', 'ru');
+      this.currLanguage = RU;
+    } else {
+      localStorage.setItem('keyboard_lang', 'en');
+      this.currLanguage = EN;
+    }
+    this.lang = localStorage.getItem('keyboard_lang');
+  };
+
   onKeyDown = (e) => {
-    this.pressedKeys = [
-      ...this.pressedKeys,
-      document.getElementById(`${e.code}`),
-    ];
-    this.pressedKeys.map((el) => el.classList.add('pressed'));
+    if (keyCode.includes(e.code)) {
+      this.pressedKeys = [
+        ...this.pressedKeys,
+        document.getElementById(`${e.code}`),
+      ];
+      this.pressedKeys.map((el) => el.classList.add('pressed'));
+    }
   };
 
   onKeyUp = (e) => {
-    this.pressedKeys = this.pressedKeys.filter((el) => el.id !== e.code);
-    document.getElementById(`${e.code}`).classList.remove('pressed');
+    if (keyCode.includes(e.code)) {
+      this.pressedKeys = this.pressedKeys.filter((el) => el.id !== e.code);
+      document.getElementById(`${e.code}`).classList.remove('pressed');
+    }
   };
 
   onMouseDown = (e) => {
