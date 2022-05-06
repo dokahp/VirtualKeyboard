@@ -71,6 +71,7 @@ class Keyboard {
   constructor() {
     this.shiftPressed = false;
     this.capsLockPressed = false;
+    this.pressedKeys = [];
     if (localStorage.getItem('keyboard_lang')) {
       this.lang = localStorage.getItem('keyboard_lang');
     } else {
@@ -108,11 +109,7 @@ class Keyboard {
           this.newKey.classList.add('space');
         }
       }
-      if (Array.isArray(EN[i])) {
-        this.newKey.classList.add(`k${EN[i][1].charCodeAt()}`);
-      } else {
-        this.newKey.classList.add(`k${EN[i].charCodeAt()}`);
-      }
+      this.newKey.setAttribute('id', `${keyCode[i]}`);
       this.main.appendChild(this.newKey);
       this.keyCap = document.createElement('div');
       if (Array.isArray(EN[i])) {
@@ -120,7 +117,6 @@ class Keyboard {
       } else {
         this.keyCap.textContent = EN[i];
       }
-
       this.keyCap.classList.add('keycap');
       this.newKey.appendChild(this.keyCap);
     }
@@ -135,11 +131,16 @@ class Keyboard {
   };
 
   onKeyDown = (e) => {
-    this.addKeyAnimation(e);
+    this.pressedKeys = [
+      ...this.pressedKeys,
+      document.getElementById(`${e.code}`),
+    ];
+    this.pressedKeys.map((el) => el.classList.add('pressed'));
   };
 
   onKeyUp = (e) => {
-    this.removeKeyAnimation(e);
+    this.pressedKeys = this.pressedKeys.filter((el) => el.id !== e.code);
+    document.getElementById(`${e.code}`).classList.remove('pressed');
   };
 
   onMouseDown = (e) => {
