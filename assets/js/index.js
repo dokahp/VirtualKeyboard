@@ -138,6 +138,8 @@ class Keyboard {
     } else if (this.capsLockPressed) {
       if (keyId < 13) {
         this.input.value += this.currLang[keyId][1];
+      } else if (Array.isArray(this.currLang[keyId])) {
+        this.input.value += this.currLang[keyId][1];
       } else {
         this.input.value += this.currLang[keyId];
       }
