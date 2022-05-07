@@ -104,11 +104,11 @@ class Keyboard {
   };
 
   addValueToCursorPosition = (value) => {
-    this.cursor = this.input.selectionStart;
+    const cursor = this.input.selectionStart;
     const textVal = this.input.value;
-    this.input.value = (textVal.slice(0, this.cursor) + value + textVal.slice(this.cursor));
-    this.input.selectionStart = this.cursor + 1;
-    this.input.selectionEnd = this.cursor + 1;
+    this.input.value = (textVal.slice(0, cursor) + value + textVal.slice(cursor));
+    this.input.selectionStart = cursor + 1;
+    this.input.selectionEnd = cursor + 1;
   };
 
   onKeyDown = (e) => {
@@ -137,10 +137,10 @@ class Keyboard {
       } else if (this.input.selectionStart === 0) {
         this.input.value = textVal;
       } else {
-        this.cursor = this.input.selectionStart - 1;
-        this.input.value = (textVal.slice(0, this.cursor) + textVal.slice(this.cursor + 1));
-        this.input.selectionStart -= 1;
-        this.input.selectionEnd = this.input.selectionStart;
+        const cursor = this.input.selectionStart - 1;
+        this.input.value = (textVal.slice(0, cursor) + textVal.slice(cursor + 1));
+        this.input.selectionStart = cursor;
+        this.input.selectionEnd = cursor;
       }
     } else if (e.key === 'Enter') {
       this.addValueToCursorPosition('\n');
