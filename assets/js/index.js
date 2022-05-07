@@ -5,6 +5,7 @@ class Keyboard {
   constructor() {
     this.shiftPressed = false;
     this.capsLockPressed = false;
+    this.metaKeyPress = false;
     this.pressedKeys = [];
     if (localStorage.getItem('keyboard_lang')) {
       this.lang = localStorage.getItem('keyboard_lang');
@@ -100,6 +101,8 @@ class Keyboard {
   };
 
   onKeyDown = (e) => {
+    let keyId = document.getElementById(e.code);
+    keyId = keyCode.indexOf(keyId.id);
     e.preventDefault();
     if (keyCode.includes(e.code)) {
       this.pressedKeys = [
@@ -111,13 +114,37 @@ class Keyboard {
     if (e.key === 'Shift') {
       this.shiftPressed = true;
       this.changeKeyboardLayout();
-    }
-    if (e.key === 'CapsLock') {
+    } else if (e.key === 'CapsLock') {
       this.capsLockPressed = true;
       this.changeKeyboardLayout();
-    }
-    if ((e.key === 'Control' && e.altKey) || (e.key === 'Alt' && e.ctrlKey)) {
+    } else if ((e.key === 'Control' && e.altKey) || (e.key === 'Alt' && e.ctrlKey)) {
       this.changeLanguage();
+    } else if (e.key === 'Backspace') {
+      this.input.value = this.input.value.slice(0, -1);
+    } else if (e.key === 'Enter') {
+      this.input.value += '\n';
+    } else if (e.key === 'Tab') {
+      this.input.value += '    ';
+    } else if (e.key === 'Space') {
+      this.input.value += ' ';
+    } else if (e.key === 'Control' || e.key === 'Alt' || e.key === 'Meta') {
+      this.metaKeyPress = !this.metaKeyPress;
+    } else if (this.shiftPressed) {
+      if (Array.isArray(this.currLang[keyId])) {
+        this.input.value += this.currLang[keyId][0];
+      } else {
+        this.input.value += this.currLang[keyId];
+      }
+    } else if (this.capsLockPressed) {
+      if (keyId < 13) {
+        this.input.value += this.currLang[keyId][1];
+      } else {
+        this.input.value += this.currLang[keyId];
+      }
+    } else if (Array.isArray(this.currLang[keyId])) {
+      this.input.value += this.currLang[keyId][1];
+    } else {
+      this.input.value += this.currLang[keyId].toLowerCase();
     }
   };
 
