@@ -76,10 +76,12 @@ class Keyboard {
           allKeyCaps[i].textContent = [...this.currLang[i]];
         }
       } else {
-        allKeyCaps[i].textContent = this.currLang[i].toLowerCase();
+        allKeyCaps[i].textContent = this.shiftPressed
+          || this.capsLockPressed
+          ? this.currLang[i]
+          : this.currLang[i].toLowerCase();
       }
     }
-    return this;
   };
 
   changeLanguage = () => {
@@ -95,12 +97,21 @@ class Keyboard {
   };
 
   onKeyDown = (e) => {
+    e.preventDefault();
     if (keyCode.includes(e.code)) {
       this.pressedKeys = [
         ...this.pressedKeys,
         document.getElementById(`${e.code}`),
       ];
       this.pressedKeys.map((el) => el.classList.add('pressed'));
+    }
+    if (e.key === 'Shift') {
+      this.shiftPressed = true;
+      this.changeKeyboardLayout();
+    }
+    if (e.key === 'CapsLock') {
+      this.capsLockPressed = true;
+      this.changeKeyboardLayout();
     }
   };
 
@@ -109,16 +120,37 @@ class Keyboard {
       this.pressedKeys = this.pressedKeys.filter((el) => el.id !== e.code);
       document.getElementById(`${e.code}`).classList.remove('pressed');
     }
+    if (e.key === 'Shift') {
+      this.shiftPressed = false;
+      this.changeKeyboardLayout();
+    }
+    if (e.key === 'CapsLock') {
+      this.capsLockPressed = false;
+      this.changeKeyboardLayout();
+    }
   };
 
   onMouseDown = (e) => {
     this.addKeyAnimation(e);
+    this.keyClicked = e.target.textContent;
+    if (this.keyClicked === 'shift') {
+      this.shiftPressed = true;
+      this.changeKeyboardLayout();
+    }
+    if (this.keyClicked === 'caps lock') {
+      this.capsLockPressed = !this.capsLockPressed;
+      this.changeKeyboardLayout();
+    }
   };
 
   onMouseUp = (e) => {
     this.removeKeyAnimation(e);
     if (e.target.textContent === 'fn' || e.target.id === 'fn') {
       this.changeLanguage();
+    }
+    if (this.keyClicked === 'shift') {
+      this.shiftPressed = false;
+      this.changeKeyboardLayout();
     }
   };
 
