@@ -66,6 +66,9 @@ class Keyboard {
     this.mainKeyboard.addEventListener('mouseup', (e) => this.onMouseUp(e));
     document.addEventListener('keydown', (e) => this.onKeyDown(e));
     document.addEventListener('keyup', (e) => this.onKeyUp(e));
+    this.input.addEventListener('focus', () => {
+      this.cursor = this.input.selectionStart;
+    });
   };
 
   changeKeyboardLayout = () => {
@@ -100,6 +103,14 @@ class Keyboard {
     this.changeKeyboardLayout();
   };
 
+  addValueToCursorPosition = (value) => {
+    this.cursor = this.input.selectionStart;
+    const textVal = this.input.value;
+    this.input.value = (textVal.slice(0, this.cursor) + value + textVal.slice(this.cursor));
+    this.input.selectionStart = this.cursor + 1;
+    this.input.selectionEnd = this.cursor + 1;
+  };
+
   onKeyDown = (e) => {
     let keyId = document.getElementById(e.code);
     keyId = keyCode.indexOf(keyId.id);
@@ -120,33 +131,43 @@ class Keyboard {
     } else if ((e.key === 'Control' && e.altKey) || (e.key === 'Alt' && e.ctrlKey)) {
       this.changeLanguage();
     } else if (e.key === 'Backspace') {
-      this.input.value = this.input.value.slice(0, -1);
+      const textVal = this.input.value;
+      if (this.input.selectionStart === this.input.value.length) {
+        this.input.value = this.input.value.slice(0, -1);
+      } else if (this.input.selectionStart === 0) {
+        this.input.value = textVal;
+      } else {
+        this.cursor = this.input.selectionStart - 1;
+        this.input.value = (textVal.slice(0, this.cursor) + textVal.slice(this.cursor + 1));
+        this.input.selectionStart -= 1;
+        this.input.selectionEnd = this.input.selectionStart;
+      }
     } else if (e.key === 'Enter') {
-      this.input.value += '\n';
+      this.addValueToCursorPosition('\n');
     } else if (e.key === 'Tab') {
-      this.input.value += '    ';
-    } else if (e.key === 'Space') {
-      this.input.value += ' ';
+      this.addValueToCursorPosition('    ');
+      this.input.selectionEnd += 3;
+      this.input.selectionStart = this.input.selectionEnd;
     } else if (e.key === 'Control' || e.key === 'Alt' || e.key === 'Meta') {
       this.metaKeyPress = !this.metaKeyPress;
     } else if (this.shiftPressed) {
       if (Array.isArray(this.currLang[keyId])) {
-        this.input.value += this.currLang[keyId][0];
+        this.addValueToCursorPosition(this.currLang[keyId][0]);
       } else {
-        this.input.value += this.currLang[keyId];
+        this.addValueToCursorPosition(this.currLang[keyId]);
       }
     } else if (this.capsLockPressed) {
       if (keyId < 13) {
-        this.input.value += this.currLang[keyId][1];
+        this.addValueToCursorPosition(this.currLang[keyId][1]);
       } else if (Array.isArray(this.currLang[keyId])) {
-        this.input.value += this.currLang[keyId][1];
+        this.addValueToCursorPosition(this.currLang[keyId][1]);
       } else {
-        this.input.value += this.currLang[keyId];
+        this.addValueToCursorPosition(this.currLang[keyId]);
       }
     } else if (Array.isArray(this.currLang[keyId])) {
-      this.input.value += this.currLang[keyId][1];
+      this.addValueToCursorPosition(this.currLang[keyId][1]);
     } else {
-      this.input.value += this.currLang[keyId].toLowerCase();
+      this.addValueToCursorPosition(this.currLang[keyId].toLowerCase());
     }
   };
 
