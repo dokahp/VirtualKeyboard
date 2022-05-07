@@ -54,6 +54,9 @@ class Keyboard {
       this.keyCap.classList.add('keycap');
       this.newKey.appendChild(this.keyCap);
     }
+    this.description = document.createElement('p');
+    this.description.innerHTML = 'Клавиатура создана в операционной системе MacOS <br />Для переключения языка: левыe ctrl + alt или клик по клавише Fn';
+    this.container.appendChild(this.description);
   };
 
   generateEvents = () => {
