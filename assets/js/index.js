@@ -109,9 +109,14 @@ class Keyboard {
   }
 
   onKeyDown(e) {
-    const code = document.getElementById(e.code).id;
-    const keyId = keyCode.indexOf(code);
     e.preventDefault();
+    let code = null;
+    if (keyCode.includes(e.code)) {
+      code = document.getElementById(e.code).id;
+    } else {
+      return null;
+    }
+    const keyId = keyCode.indexOf(code);
     if (keyCode.includes(e.code)) {
       this.pressedKeys = [
         ...this.pressedKeys,
@@ -166,6 +171,7 @@ class Keyboard {
     } else {
       this.addValueToCursorPosition(this.currLang[keyId].toLowerCase());
     }
+    return null;
   }
 
   onKeyUp(e) {
