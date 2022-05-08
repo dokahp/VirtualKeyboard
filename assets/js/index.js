@@ -15,7 +15,7 @@ class Keyboard {
     }
   }
 
-  generateKeyboard = () => {
+  generateKeyboard() {
     const BODY = document.querySelector('body');
     this.container = document.createElement('div');
     this.container.classList.add('container');
@@ -58,20 +58,17 @@ class Keyboard {
     this.description = document.createElement('p');
     this.description.innerHTML = 'Клавиатура создана в операционной системе MacOS <br />Для переключения языка: левыe ctrl(control) + alt(option) или клик по клавише Fn';
     this.container.appendChild(this.description);
-  };
+  }
 
-  generateEvents = () => {
+  generateEvents() {
     this.mainKeyboard = document.querySelector('.main');
     this.mainKeyboard.addEventListener('mousedown', (e) => this.onMouseDown(e));
     this.mainKeyboard.addEventListener('mouseup', (e) => this.onMouseUp(e));
     document.addEventListener('keydown', (e) => this.onKeyDown(e));
     document.addEventListener('keyup', (e) => this.onKeyUp(e));
-    this.input.addEventListener('focus', () => {
-      this.cursor = this.input.selectionStart;
-    });
-  };
+  }
 
-  changeKeyboardLayout = () => {
+  changeKeyboardLayout() {
     const allKeyCaps = document.querySelectorAll('.keycap');
     for (let i = 0; i < allKeyCaps.length; i += 1) {
       if (Array.isArray(this.currLang[i])) {
@@ -89,9 +86,9 @@ class Keyboard {
           : this.currLang[i].toLowerCase();
       }
     }
-  };
+  }
 
-  changeLanguage = () => {
+  changeLanguage() {
     if (this.lang === 'en') {
       localStorage.setItem('keyboard_lang', 'ru');
       this.currLang = RU;
@@ -101,19 +98,19 @@ class Keyboard {
     }
     this.lang = localStorage.getItem('keyboard_lang');
     this.changeKeyboardLayout();
-  };
+  }
 
-  addValueToCursorPosition = (value) => {
+  addValueToCursorPosition(value) {
     const cursor = this.input.selectionStart;
     const textVal = this.input.value;
     this.input.value = (textVal.slice(0, cursor) + value + textVal.slice(cursor));
     this.input.selectionStart = cursor + 1;
     this.input.selectionEnd = cursor + 1;
-  };
+  }
 
-  onKeyDown = (e) => {
-    let keyId = document.getElementById(e.code);
-    keyId = keyCode.indexOf(keyId.id);
+  onKeyDown(e) {
+    const code = document.getElementById(e.code).id;
+    const keyId = keyCode.indexOf(code);
     e.preventDefault();
     if (keyCode.includes(e.code)) {
       this.pressedKeys = [
@@ -122,15 +119,15 @@ class Keyboard {
       ];
       this.pressedKeys.map((el) => el.classList.add('pressed'));
     }
-    if (e.key === 'Shift') {
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
       this.shiftPressed = true;
       this.changeKeyboardLayout();
-    } else if (e.key === 'CapsLock') {
-      this.capsLockPressed = true;
+    } else if (e.code === 'CapsLock') {
+      this.capsLockPressed = !this.capsLockPressed;
       this.changeKeyboardLayout();
     } else if ((e.key === 'Control' && e.altKey) || (e.key === 'Alt' && e.ctrlKey)) {
       this.changeLanguage();
-    } else if (e.key === 'Backspace') {
+    } else if (e.code === 'Backspace') {
       const textVal = this.input.value;
       if (this.input.selectionStart === this.input.value.length) {
         this.input.value = this.input.value.slice(0, -1);
@@ -142,13 +139,13 @@ class Keyboard {
         this.input.selectionStart = cursor;
         this.input.selectionEnd = cursor;
       }
-    } else if (e.key === 'Enter') {
+    } else if (e.code === 'Enter') {
       this.addValueToCursorPosition('\n');
-    } else if (e.key === 'Tab') {
+    } else if (e.code === 'Tab') {
       this.addValueToCursorPosition('    ');
       this.input.selectionEnd += 3;
       this.input.selectionStart = this.input.selectionEnd;
-    } else if (e.key === 'Control' || e.key === 'Alt' || e.key === 'Meta') {
+    } else if (['ControlLeft', 'AltLeft', 'MetaLeft', 'MetaRight', 'AltRight'].includes(e.code)) {
       this.metaKeyPress = !this.metaKeyPress;
     } else if (this.shiftPressed) {
       if (Array.isArray(this.currLang[keyId])) {
@@ -169,64 +166,55 @@ class Keyboard {
     } else {
       this.addValueToCursorPosition(this.currLang[keyId].toLowerCase());
     }
-  };
+  }
 
-  onKeyUp = (e) => {
+  onKeyUp(e) {
     if (keyCode.includes(e.code)) {
       this.pressedKeys = this.pressedKeys.filter((el) => el.id !== e.code);
       document.getElementById(`${e.code}`).classList.remove('pressed');
     }
-    if (e.key === 'Shift') {
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
       this.shiftPressed = false;
       this.changeKeyboardLayout();
     }
-    if (e.key === 'CapsLock') {
+    if (e.code === 'CapsLock') {
       this.capsLockPressed = false;
       this.changeKeyboardLayout();
     }
-  };
+  }
 
-  onMouseDown = (e) => {
-    this.addKeyAnimation(e);
-    this.keyClicked = e.target.textContent;
-    if (this.keyClicked === 'shift') {
-      this.shiftPressed = true;
-      this.changeKeyboardLayout();
-    }
-    if (this.keyClicked === 'caps lock') {
-      this.capsLockPressed = !this.capsLockPressed;
-      this.changeKeyboardLayout();
-    }
-  };
-
-  onMouseUp = (e) => {
-    this.removeKeyAnimation(e);
+  onMouseDown(e) {
+    let btnPressCode = '';
+    // this.addKeyAnimation(e);
     if (e.target.textContent === 'fn' || e.target.id === 'fn') {
       this.changeLanguage();
+    } else {
+      if (e.target.id) {
+        btnPressCode = e.target.id;
+      } else {
+        btnPressCode = e.target.parentNode.id;
+      }
+      const keyDown = new KeyboardEvent('keydown', { code: btnPressCode, shiftKey: this.shiftPressed });
+      document.dispatchEvent(keyDown);
     }
-    if (this.keyClicked === 'shift') {
+  }
+
+  onMouseUp(e) {
+    let btnPressCode = '';
+    if (e.target.id) {
+      btnPressCode = e.target.id;
+    } else {
+      btnPressCode = e.target.parentNode.id;
+    }
+    if (keyCode.includes(btnPressCode)) {
+      this.pressedKeys = this.pressedKeys.filter((el) => el.id !== btnPressCode);
+      document.getElementById(`${btnPressCode}`).classList.remove('pressed');
+    }
+    if (btnPressCode === 'ShiftLeft' || btnPressCode === 'ShiftRight') {
       this.shiftPressed = false;
       this.changeKeyboardLayout();
     }
-  };
-
-  addKeyAnimation = (e) => {
-    this.object = e.target;
-    if (e.target.classList.contains('key')) {
-      e.target.classList.add('pressed');
-    } else {
-      e.target.parentNode.classList.add('pressed');
-    }
-  };
-
-  removeKeyAnimation = (e) => {
-    this.object = e.target;
-    if (this.object.classList.contains('key')) {
-      this.object.classList.remove('pressed');
-    } else {
-      this.object.parentNode.classList.remove('pressed');
-    }
-  };
+  }
 }
 
 window.onload = () => {
