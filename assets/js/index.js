@@ -56,7 +56,8 @@ class Keyboard {
       this.newKey.appendChild(this.keyCap);
     }
     this.description = document.createElement('p');
-    this.description.innerHTML = 'Клавиатура создана в операционной системе MacOS <br />Для переключения языка: левыe ctrl(control) + alt(option) или клик по клавише Fn';
+    this.description.innerHTML = 'Клавиатура создана в операционной системе MacOS <br />';
+    this.description.innerHTML += 'Для переключения языка: левыe ctrl(control) + alt(option) или клик по клавише Fn';
     this.container.appendChild(this.description);
   }
 
@@ -183,7 +184,7 @@ class Keyboard {
       this.shiftPressed = false;
       this.changeKeyboardLayout();
     }
-    if (e.code === 'CapsLock') {
+    if (e.code === 'CapsLock' && this.capsLockPressed) {
       this.capsLockPressed = false;
       this.changeKeyboardLayout();
     }
