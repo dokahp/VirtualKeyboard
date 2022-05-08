@@ -1,4 +1,4 @@
-import { keyCode } from './buttonsData.js';
+import { keyCode } from './keyCode.js';
 import { EN, RU } from './languages.js';
 
 class Keyboard {
@@ -61,9 +61,9 @@ class Keyboard {
   }
 
   generateEvents() {
-    this.mainKeyboard = document.querySelector('.main');
-    this.mainKeyboard.addEventListener('mousedown', (e) => this.onMouseDown(e));
-    this.mainKeyboard.addEventListener('mouseup', (e) => this.onMouseUp(e));
+    this.allKeys = document.querySelector('.main');
+    this.allKeys.childNodes.forEach((el) => el.addEventListener('mousedown', (e) => this.onMouseDown(e)));
+    this.allKeys.childNodes.forEach((el) => el.addEventListener('mouseup', (e) => this.onMouseUp(e)));
     document.addEventListener('keydown', (e) => this.onKeyDown(e));
     document.addEventListener('keyup', (e) => this.onKeyUp(e));
   }
@@ -184,28 +184,17 @@ class Keyboard {
   }
 
   onMouseDown(e) {
-    let btnPressCode = '';
-    // this.addKeyAnimation(e);
-    if (e.target.textContent === 'fn' || e.target.id === 'fn') {
+    const btnPressCode = e.currentTarget.id;
+    if (e.currentTarget.textContent === 'fn' || e.currentTarget.id === 'fn') {
       this.changeLanguage();
     } else {
-      if (e.target.id) {
-        btnPressCode = e.target.id;
-      } else {
-        btnPressCode = e.target.parentNode.id;
-      }
       const keyDown = new KeyboardEvent('keydown', { code: btnPressCode, shiftKey: this.shiftPressed });
       document.dispatchEvent(keyDown);
     }
   }
 
   onMouseUp(e) {
-    let btnPressCode = '';
-    if (e.target.id) {
-      btnPressCode = e.target.id;
-    } else {
-      btnPressCode = e.target.parentNode.id;
-    }
+    const btnPressCode = e.currentTarget.id;
     if (keyCode.includes(btnPressCode)) {
       this.pressedKeys = this.pressedKeys.filter((el) => el.id !== btnPressCode);
       document.getElementById(`${btnPressCode}`).classList.remove('pressed');
