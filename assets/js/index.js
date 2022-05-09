@@ -184,10 +184,6 @@ class Keyboard {
       this.shiftPressed = false;
       this.changeKeyboardLayout();
     }
-    // if (e.code === 'CapsLock' && this.capsLockPressed) {
-    //   this.capsLockPressed = false;
-    //   this.changeKeyboardLayout();
-    // }
   }
 
   onMouseDown(e) {
